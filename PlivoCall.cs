@@ -18,7 +18,9 @@ namespace PlivoCall
                 { "to", "11111111111" },
                 { "from", "22222222222" },
                 { "answer_url", "http://some.domain/answer/" },
-                { "answer_method", "GET" }
+                { "answer_method", "GET" },
+		// add sip headers
+                //{ "sip_header", "sipheader1=value1,sipheader2=value2" },
             });
             if (resp.Data != null)
             {
