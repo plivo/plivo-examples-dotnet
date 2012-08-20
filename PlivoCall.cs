@@ -32,7 +32,7 @@ namespace PlivoCall
                 Console.WriteLine(resp.ErrorMessage);
 
             // Place bulk call with sip headers for each call
-            IRestResponse<Call> resp = plivo.make_bulk_call(new dict {
+            IRestResponse<BulkCall> resp = plivo.make_bulk_call(new dict {
                 { "from", "22222222222" },
                 { "answer_url", "http://some.domain/answer/" },
                 { "answer_method", "GET" },
