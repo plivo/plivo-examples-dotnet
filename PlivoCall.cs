@@ -31,6 +31,19 @@ namespace PlivoCall
             else
                 Console.WriteLine(resp.ErrorMessage);
 
+            // Place bulk call with sip headers for each call
+            IRestResponse<Call> resp = plivo.make_bulk_call(new dict {
+                { "from", "22222222222" },
+                { "answer_url", "http://some.domain/answer/" },
+                { "answer_method", "GET" },
+                }},
+            // sip headers for each call
+            new dict {
+            { "22222222222", "head1=val1,head2=val2" }, 
+	    { "33333333333", "head3=val3,head3=val4" }, 
+	    { "44444444444", "head5=val5,head6=val6" }, 
+            });
+
             // Get all CDRs
             string cdr_id = "";
             IRestResponse<CDRList> resp2 = plivo.get_cdrs(new dict {
