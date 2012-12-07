@@ -15,7 +15,7 @@ namespace PlivoAccount
             string auth_token = "<your_auth_token>";
             RestAPI plivo = new RestAPI(auth_id, auth_token);
 
-			string call_uuid = # get the live call's uuid
+            string call_uuid = // get the live call's uuid
 			// Record a live call
             IRestResponse<Record> resp = plivo.record(new dict {
                 { "call_uuid", call_uuid },
