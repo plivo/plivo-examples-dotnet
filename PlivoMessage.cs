@@ -12,7 +12,7 @@ namespace PlivoMessage
         {
             RestAPI plivo = new RestAPI("XXXXXXXXXXXXXXXXXXXXXXX", "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            IRestResponse<Message> resp = plivo.send_message(new Dictionary<string, string>() 
+            IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
             {
                 { "src", "11212121211" },
                 { "dst", "12212121211" },
