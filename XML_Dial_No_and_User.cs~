@@ -11,6 +11,8 @@ public partial class Default2 : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Plivo.XML.Response resp = new Plivo.XML.Response();
+        string user = "";
+        string num = "";
         Plivo.XML.Dial dial = new Plivo.XML.Dial(new Dictionary<string, string>() { });
         if (Request.HttpMethod == "GET")
         {
