@@ -14,12 +14,14 @@ namespace PlivoMessage
 
             IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
             {
-                { "src", "1111111111" }, // Sender's phone number with country code
-                { "dst", "2222222222" }, // Receiver's phone number wiht country code
+                { "src", "18583650866" }, // Sender's phone number with country code
+                { "dst", "919663489033" }, // Receiver's phone number wiht country code
                 { "text", "Hi, text from Plivo." } // Your SMS text message
                 // To send Unicode text
                 // {"text", "こんにちは、元気ですか？"} // Your SMS text message - Japanese
                 // {"text", "Ce est texte généré aléatoirement"} // Your SMS text message - French
+                { "url", "http://dotnettest.apphb.com/delivery_report"}, // The URL to which with the status of the message is sent
+                { "method", "POST"} // Method to invoke the url
             });
 
             //Prints the message details
