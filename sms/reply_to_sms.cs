@@ -4,11 +4,11 @@ using System.Reflection;
 using RestSharp;
 using Plivo.API;
 
-namespace reply_to_sms
+namespace Reply_To_Sms
 {
-    class Program
+    public class Program : NancyModule
     {
-        static void Main(string[] args)
+        public Program()
         {
             Post["/receive_sms"] = x =>
             {

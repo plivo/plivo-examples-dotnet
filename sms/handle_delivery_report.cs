@@ -4,11 +4,11 @@ using System.Reflection;
 using RestSharp;
 using Plivo.API;
 
-namespace PlivoMessage
+namespace Handle_delivery
 {
-    class Program
+    public class Program : NancyModule
     {
-        static void Main(string[] args)
+        public Program()
         {
             Post["/delivery_report"] = x =>
             {

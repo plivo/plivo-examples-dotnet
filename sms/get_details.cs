@@ -4,7 +4,7 @@ using System.Reflection;
 using RestSharp;
 using Plivo.API;
 
-namespace get_details
+namespace Get_Details
 {
     class Program
     {

@@ -4,7 +4,7 @@ using System.Reflection;
 using RestSharp;
 using Plivo.API;
 
-namespace long_sms
+namespace Long_Sms
 {
     class Program
     {

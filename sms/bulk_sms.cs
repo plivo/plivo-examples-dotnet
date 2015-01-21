@@ -4,9 +4,9 @@ using System.Reflection;
 using RestSharp;
 using Plivo.API;
 
-namespace PlivoMessage
+namespace Bulk_Sms
 {
-    class bulk_sms
+    class Program
     {
         static void Main(string[] args)
         {
