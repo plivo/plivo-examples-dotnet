@@ -27,6 +27,7 @@ namespace reply_to_sms
                 { "dst", from_number } // receiver's phone number
                 });
 
+                // Print the XML
                 Console.WriteLine(resp.ToString());
 
                 // Return the XML
