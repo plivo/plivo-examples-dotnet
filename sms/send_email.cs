@@ -63,3 +63,9 @@ namespace Send_Email
         }
     }
 }
+
+// Sample Output
+/*
+From : 1111111111, To : 2222222222, Text : Hello, from Plivo
+Message Sent Successfully!!
+*/
