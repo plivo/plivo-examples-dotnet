@@ -14,8 +14,8 @@ namespace Send_Sms
 
             IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
             {
-                { "src", "18583650866" }, // Sender's phone number with country code
-                { "dst", "919663489033" }, // Receiver's phone number wiht country code
+                { "src", "1111111111" }, // Sender's phone number with country code
+                { "dst", "2222222222" }, // Receiver's phone number wiht country code
                 { "text", "Hi, text from Plivo." } // Your SMS text message
                 // To send Unicode text
                 // {"text", "こんにちは、元気ですか？"} // Your SMS text message - Japanese
