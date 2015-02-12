@@ -5,8 +5,6 @@ using RestSharp;
 using Plivo.XML;
 using Nancy;
 
-# Set the caller ID using Dial XML
-
 namespace hangup
 {
     public class Program : NancyModule
