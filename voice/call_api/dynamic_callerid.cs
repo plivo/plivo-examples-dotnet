@@ -16,6 +16,8 @@ namespace hangup
             Get["dynamic_caller_id"] = x =>
             {
                 Plivo.XML.Response resp = new Plivo.XML.Response();
+
+                // Generate Dial XML
                 Plivo.XML.Dial dial = new Plivo.XML.Dial(new Dictionary<string, string>() { });
                 dial.AddNumber("1111111111", new Dictionary<string, string>() { });
                 resp.Add(dial);
@@ -53,7 +55,8 @@ namespace make_calls
         static void Main(string[] args)
         {
             RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-             
+
+            // Make a call 
             IRestResponse<Call> resp = plivo.make_call(new Dictionary<string, string>() 
             {
                 { "from", "1111111111" }, // The phone number to which the call has to be placed

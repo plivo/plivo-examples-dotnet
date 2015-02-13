@@ -14,7 +14,11 @@ namespace hangup
             Get["/hangup"] = x =>
             {
                 Plivo.XML.Response resp = new Plivo.XML.Response();
+
+                // Add Speak XML Tag
                 resp.AddSpeak("This call will be hung up in 1 minute", new Dictionary<string, string>(){});
+
+                // Add Hangup XML Tag
                 resp.AddHangup(new Dictionary<string, string>() 
                 {
                     {"reason","busy"}, // Specify the reason for hangup

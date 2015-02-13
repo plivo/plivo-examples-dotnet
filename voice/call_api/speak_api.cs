@@ -16,6 +16,8 @@ namespace hangup
                 Plivo.XML.Response resp = new Plivo.XML.Response();
                 
                 String getdigits_action_url = "http://dotnettest.apphb.com/speak_action";
+
+                // Add GetDigits XML Tag
                 GetDigits gd = new GetDigits("",new Dictionary<string, string>() 
                 {
                     {"action",getdigits_action_url}, // The URL to which the digits are sent. 
@@ -25,8 +27,11 @@ namespace hangup
                     {"redirect","false"} // Redirect to action URL if true. If false,only request the URL and continue to next element.
                 });
 
+                // Add GetDigits Speak XML Tag
                 gd.AddSpeak("Press 1 to listen to a message",new Dictionary<string,string>());
                 resp.Add(gd);
+
+                // Add Wait XML Tag
                 resp.AddWait(new Dictionary<string, string>() 
                 {
                     {"length","10"}
@@ -48,6 +53,7 @@ namespace hangup
 
                 RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN";
 
+                // Call to Speak API
                 IRestResponse<GenericResponse> resp = plivo.speak(new Dictionary<string, string>() 
                 {
                     { "call_uuid", uuid }, // ID of the call
