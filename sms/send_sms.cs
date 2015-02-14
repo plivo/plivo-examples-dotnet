@@ -28,7 +28,7 @@ namespace Send_Sms
             Console.Write(resp.Content);
 
             // Print the message_uuid
-            Console.WriteLine(resp.Data.message_uuid)
+            Console.WriteLine(resp.Data.message_uuid[0])
 
             // Print the api_id
             Console.WriteLine(resp.Data.api_id)
