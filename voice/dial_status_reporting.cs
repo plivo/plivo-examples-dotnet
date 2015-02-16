@@ -11,7 +11,6 @@ namespace dial_status_reporting
     {
         public Program()
         {
-
             Get["/dial"] = x =>
             {
                 Plivo.XML.Response resp = new Plivo.XML.Response();

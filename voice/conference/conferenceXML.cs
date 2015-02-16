@@ -70,5 +70,16 @@ namespace conference
 
 /*
 Sample Output
+<Response>
+    <Speak>
+        You will now be placed into a demo conference. This is brought to you by Plivo. To know more, visit us at Plivo.com
+    </Speak>
+    <Conference enterSound="beep:2" record="true" action="http://dotnettest.apphb.com/response/conf_action" method="GET" callbackUrl="http://dotnettest.apphb.com/response/conf_callback" callbackMethod="GET">demo</Conference>
+</Response>
 
+Conference Name : demo, Conference UUID : 23b1caa6-b5af-11e4-b696-377ffe01233f, Conference Member ID : 1486, Record URL : http://s3.amazonaws.com/recordings_2013/237254f5-b5af-11e4-a664-0026b945b52b.mp3, Record ID : 7213cd8e-b5af-11e4-a664-0026b945b52b
+
+Conference Action : enter, Conference Name : demo, Conference UUID : 23b1caa6-b5af-11e4-b696-377ffe01233f, Conference Member ID : 1486, Call UUID : 644b143c-b5af-11e4-bc93-c73b3246dc2a, Record URL : , Record ID :
+Conference Action : exit, Conference Name : demo, Conference UUID : 23b1caa6-b5af-11e4-b696-377ffe01233f, Conference Member ID : 1486, Call UUID : 644b143c-b5af-11e4-bc93-c73b3246dc2a, Record URL : , Record ID :
+Conference Action : record, Conference Name : demo, Conference UUID : 23b1caa6-b5af-11e4-b696-377ffe01233f, Conference Member ID : , Call UUID : , Record URL : http://s3.amazonaws.com/recordings_2013/237254f5-b5af-11e4-a664-0026b945b52b.mp3, Record ID : 237256e6-b5af-11e4-a664-0026b945b52b
 */

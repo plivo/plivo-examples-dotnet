@@ -29,7 +29,7 @@ namespace conf_call
 
 // Sample output
 /*
-erenceanswer_method - GET{
+{
   "api_id": "1153be1e-b5af-11e4-9107-22000afaaa90",
   "message": "calls fired",
   "request_uuid": [
