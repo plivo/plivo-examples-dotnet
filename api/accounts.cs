@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using RestSharp;
 using Plivo.API;
 
-namespace send_sms
+namespace accounts
 {
-    class bulk_sms
+    class Program
     {
         static void Main(string[] args)
         {
