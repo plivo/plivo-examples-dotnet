@@ -53,7 +53,7 @@ namespace phone_ivr
 
             Post["/response/ivr"] = x =>
             {
-                String digit = Request.Query["Digits"];
+                String digit = Request.Form["Digits"];
                 Debug.WriteLine("Digit pressed : {0}", digit);
 
                 Plivo.XML.Response resp = new Plivo.XML.Response();
