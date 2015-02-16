@@ -9,7 +9,7 @@ namespace endpoints
     {
         static void Main(string[] args)
         {
-            RestAPI plivo = new RestAPI("XXXXXXXXXXXXXXXXX", "ZDZlNzI1ZDVkNDkzYWIxMzk5NjU1ODkzZWYyZmEx");
+            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
             
             // Create an endpoint
             IRestResponse<Endpoint> resp = plivo.create_endpoint(new Dictionary<string,string>()
