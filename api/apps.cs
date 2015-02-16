@@ -175,7 +175,10 @@ namespace apps
             Console.Write(res3.Content);
 
             /*
-            Sample Output
+            Successful Output
+            " "
+
+            Unsuccessful Output
             {
               "api_id": "96823a92-b5c9-11e4-ac1f-22000ac51de6",
               "error": "not found"
