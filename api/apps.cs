@@ -14,8 +14,8 @@ namespace apps
             // Create a new appplication
             IRestResponse<GenericResponse> resp = plivo.create_application(new Dictionary<string,string>()
             {
-              {"answer_url", "http://example.com"},
-              {"app_name", "Tesp_app"}
+              {"answer_url", "http://example.com"}, // The URL Plivo will fetch when a call executes this application
+              {"app_name", "Tesp_app"} // The name of your application
             });
 
             //Prints the response
@@ -116,7 +116,7 @@ namespace apps
             // Get details of a single application
             IRestResponse<Application> res1 = plivo.get_application(new Dictionary<string, string>()
             {
-                {"app_id","21154456373728579"}
+                {"app_id","21154456373728579"} // ID of the application for which the details have to be retrieved
             });
 
             //Prints the response
@@ -150,8 +150,8 @@ namespace apps
             // Modify an application
             IRestResponse<GenericResponse> res2 = plivo.modify_application(new Dictionary<string, string>()
             {
-                {"app_id","21154456373728579"},
-                {"answer_url","http://exampletest.com"}
+                {"app_id","21154456373728579"}, // ID of the application that has to be modified
+                {"answer_url","http://exampletest.com"} // Values that have to be updated
             });
 
             //Prints the response
@@ -168,7 +168,7 @@ namespace apps
             // Delete an application
             IRestResponse<GenericResponse> res3 = plivo.delete_application(new Dictionary<string,string>()
             {
-              {"app_id","21154456373728579"}  
+              {"app_id","21154456373728579"}  // ID of the application that as to be deleted
             });
 
             //Prints the response

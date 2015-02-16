@@ -14,9 +14,9 @@ namespace endpoints
             // Create an endpoint
             IRestResponse<Endpoint> resp = plivo.create_endpoint(new Dictionary<string,string>()
             {
-              {"username", "testuser"},
-              {"password", "testt"},
-              {"alias", "Test"}
+              {"username", "testuser"}, // The username for the endpoint to be created
+              {"password", "testt"}, // The password for your endpoint username
+              {"alias", "Test"} // Alias for this endpoint
             });
 
             //Prints the response
@@ -36,8 +36,8 @@ namespace endpoints
             // Get details of all existing applications
             IRestResponse<EndpointList> res = plivo.get_endpoints(new Dictionary<string, string>()
             { 
-                {"limit","2"},
-                {"offset","0"}
+                {"limit","2"}, // The number of results per page
+                {"offset","0"} // The number of value items by which the results should be offset
             });
 
             //Prints the response
@@ -87,7 +87,7 @@ namespace endpoints
             // Get details of a single application
             IRestResponse<Endpoint> res1 = plivo.get_endpoint(new Dictionary<string, string>()
             {
-                {"endpoint_id","29147375335448"}
+                {"endpoint_id","29147375335448"} // ID of the endpoint for which the details have to be retrieved
             });
 
             //Prints the response
@@ -112,8 +112,8 @@ namespace endpoints
             // Modify an application
             IRestResponse<GenericResponse> res2 = plivo.modify_endpoint(new Dictionary<string, string>()
             {
-                {"endpoint_id","29147375335448"},
-                {"alias","Testing"}
+                {"endpoint_id","29147375335448"}, // ID of the endpoint that has to be modified
+                {"alias","Testing"} // Values that have to be updated
             });
 
             //Prints the response
@@ -130,7 +130,7 @@ namespace endpoints
             // Delete an application
             IRestResponse<GenericResponse> res3 = plivo.delete_endpoint(new Dictionary<string,string>()
             {
-              {"endpoint_id","29147375335448"}  
+              {"endpoint_id","29147375335448"}  // ID of the endpoint that as to be deleted
             });
 
             //Prints the response

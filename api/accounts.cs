@@ -10,7 +10,7 @@ namespace accounts
         static void Main(string[] args)
         {
             RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-            /*
+            
             // Get Account details 
             IRestResponse<Account> resp = plivo.get_account();
 
@@ -38,10 +38,10 @@ namespace accounts
             // Modify Account 
             IRestResponse<GenericResponse> res = plivo.modify_account(new Dictionary<string, string>()
             {
-                {"name","Testing"},
-                {"city","City Test"},
-                {"address","City address"},
-                {"timezone","Asia/Kolkata"}
+                {"name","Testing"}, // Name of the account holder or business.
+                {"city","City Test"}, //City of the account holder
+                {"address","City address"}, // Address of the account holder 
+                {"timezone","Asia/Kolkata"} // Time zone of the account holder
             });
 
             //Prints the response
@@ -58,8 +58,8 @@ namespace accounts
             // Create a sub account
             IRestResponse<GenericResponse> res1 = plivo.create_subaccount(new Dictionary<string, string>()
             {
-                {"name","Testing_subaccount"},
-                {"enabled","True"}
+                {"name","Testing_subaccount"}, // Name of the subaccount
+                {"enabled","True"} // Specify if the subaccount should be enabled or not
             });
 
             //Prints the response
@@ -78,8 +78,8 @@ namespace accounts
             // Modify a sub account
             IRestResponse<GenericResponse> res2 = plivo.modify_subaccount(new Dictionary<string, string>()
             {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"},
-                {"name","Testing_subaccount"}
+                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"}, // Auth ID of the sub acccount that has to be modified
+                {"name","Testing_subaccount"} // Name of the subaccount
             });
 
             //Prints the response
@@ -156,7 +156,7 @@ namespace accounts
             // Get details of a single sub account
             IRestResponse<SubAccount> res4 = plivo.get_subaccount(new Dictionary<string, string>()
             {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"}
+                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"} // Auth ID of the sub acccount for which the details hae to be retrieved
             });
 
             //Prints the response
@@ -181,7 +181,7 @@ namespace accounts
             // Delete a sub account
             IRestResponse<GenericResponse> res5 = plivo.delete_subaccount(new Dictionary<string, string>()
             {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"}
+                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"} // Auth ID of the sub acccount that has to be deleted
             });
 
             //Prints the response
