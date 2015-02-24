@@ -33,7 +33,7 @@ namespace Long_Sms
 
             RestAPI plivo1 = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
 
-            IRestResponse<MessageResponse> response = plivo.send_message(new Dictionary<string, string>() 
+            IRestResponse<Message> response = plivo1.get_message(new Dictionary<string, string>() 
             {
                 { "record_id", uuid } // Message UUID
             });
