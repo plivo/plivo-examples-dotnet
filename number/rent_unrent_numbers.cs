@@ -32,6 +32,17 @@ namespace rent_unrent_numbers
 
             Console.WriteLine(res.Content);
             Debug.WriteLine(res.Content);
+
+            //Modify a number
+            IRestResponse<PhoneNumberResponse> res = plivo.modify_number(new Dictionary<string, string>()
+            {
+                {"number","12109206499"}, // The phone number that has to be rented
+                {"alias","Test"}, //The textual name given to the number
+                {"subaccount","Your SUB_AUTH_ID"} //The auth_id of the subaccount to which this number should be added.
+            });
+
+            Console.WriteLine(res.Content);
+            Debug.WriteLine(res.Content);            
             
             // Unrent a number
             IRestResponse<GenericResponse> response = plivo.unrent_number(new Dictionary<string, string>()
@@ -111,6 +122,12 @@ Buy a new phone number
   ],
   "status": "fulfilled"
 }
+
+Modify a Number
+{
+  "api_id": "46dcfbca-2ee7-11e5-a151-feff819cdc9f",
+  "message": "changed"
+} 
 
 Unrent a number
 {
