@@ -16,7 +16,7 @@ namespace Send_Sms
             {
                 { "src", "1111111111" }, // Sender's phone number with country code
                 { "dst", "2222222222" }, // Receiver's phone number wiht country code
-                { "text", "Hi, text from Plivo." } // Your SMS text message
+                { "text", "Hi, text from Plivo." }, // Your SMS text message
                 // To send Unicode text
                 // {"text", "こんにちは、元気ですか？"} // Your SMS text message - Japanese
                 // {"text", "Ce est texte généré aléatoirement"} // Your SMS text message - French
