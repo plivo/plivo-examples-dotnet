@@ -5,68 +5,78 @@ using RestSharp;
 using Plivo.XML;
 using Nancy;
 
-namespace hangup
-{
-    public class Program : NancyModule
-    {
-        public Program()
-        {
-            Get["/speak_api"] = x =>
-            {
-                Plivo.XML.Response resp = new Plivo.XML.Response();
-                
-                String getdigits_action_url = "http://dotnettest.apphb.com/speak_action";
+namespace hangup {
+  public class Program: NancyModule {
+    public Program() {
+      Get["/speak_api"] = x => {
+        Plivo.XML.Response resp = new Plivo.XML.Response();
 
-                // Add GetDigits XML Tag
-                GetDigits gd = new GetDigits("",new Dictionary<string, string>() 
-                {
-                    {"action",getdigits_action_url}, // The URL to which the digits are sent. 
-                    {"method","GET"}, // Submit to action URL using GET or POST.
-                    {"timeout","7"}, // Time in seconds to wait to receive the first digit. 
-                    {"retries","1"}, // Indicates the number of retries the user is allowed to input the digits,
-                    {"redirect","false"} // Redirect to action URL if true. If false,only request the URL and continue to next element.
-                });
+        String getdigits_action_url = "http://dotnettest.apphb.com/speak_action";
 
-                // Add GetDigits Speak XML Tag
-                gd.AddSpeak("Press 1 to listen to a message",new Dictionary<string,string>());
-                resp.Add(gd);
+        // Add GetDigits XML Tag
+        GetDigits gd = new GetDigits("", new Dictionary < string, string > () {
+          {
+            "action",
+            getdigits_action_url
+          }, // The URL to which the digits are sent. 
+          {
+            "method",
+            "GET"
+          }, // Submit to action URL using GET or POST.
+          {
+            "timeout",
+            "7"
+          }, // Time in seconds to wait to receive the first digit. 
+          {
+            "retries",
+            "1"
+          }, // Indicates the number of retries the user is allowed to input the digits,
+          {
+            "redirect",
+            "false"
+          } // Redirect to action URL if true. If false,only request the URL and continue to next element.
+        });
 
-                // Add Wait XML Tag
-                resp.AddWait(new Dictionary<string, string>() 
-                {
-                    {"length","10"}
-                });
+        // Add GetDigits Speak XML Tag
+        gd.AddSpeak("Press 1 to listen to a message", new Dictionary < string, string > ());
+        resp.Add(gd);
 
-                Debug.WriteLine(resp.ToString());
+        // Add Wait XML Tag
+        resp.AddWait(new Dictionary < string, string > () {
+          {
+            "length",
+            "10"
+          }
+        });
 
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
+        Debug.WriteLine(resp.ToString());
 
-            Get["/speak_action"] = x =>
-            {
-                String digits = Request.Query["Digits"];
-                String uuid = Request.Query["CallUUID"];
-                Debug.WriteLine("Digit pressed : {0}, Call UUID : {1}",digits, uuid );
+        var output = resp.ToString();
+        var res = (Nancy.Response) output;
+        res.ContentType = "text/xml";
+        return res;
+      };
 
-                RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN";
+      Get["/speak_action"] = x => {
+        String digits = Request.Query["Digits"];
+        String uuid = Request.Query["CallUUID"];
+        Debug.WriteLine("Digit pressed : {0}, Call UUID : {1}", digits, uuid);
 
-                // Call to Speak API
-                IRestResponse<GenericResponse> resp = plivo.speak(new Dictionary<string, string>() 
-                {
-                    { "call_uuid", uuid }, // ID of the call
-                    { "text", "Hello, from Speak API" }, // Text to be played.
-                    { "voice", "WOMAN" }, // The voice to be used, can be MAN,WOMAN. Defaults to WOMAN.
-                    {"language","en-GB"} // The language to be used
-                });
-
-                Debug.WriteLine(resp.Content);
-                return "Speak API";
-            };
+        // Call to Speak API
+        var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+        try {
+          var response = api.Call.StartSpeaking(
+            callUuid: uuid,
+            text: "Hello World"
+          );
+          Console.WriteLine(response);
+        } catch (PlivoRestException e) {
+          Console.WriteLine("Exception: " + e.Message);
         }
+
+      };
     }
+  }
 }
 
 /*

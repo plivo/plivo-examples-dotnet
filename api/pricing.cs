@@ -1,25 +1,19 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace pricing
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace pricing {
+  class Program {
+    static void Main(string[] args) {
 
-            IRestResponse<PlivoPricing> resp = plivo.pricing(new Dictionary<string, string>()
-            {
-                {"country_iso","GB"}
-            });
+      // Get pricing of a country
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      var response = api.Pricing.Get(
+      countryIso: "GB");
 
-            Console.WriteLine(resp.Content);
-            Console.ReadLine();
-        }
+      Console.WriteLine(response);
     }
+  }
 }
 
 /*

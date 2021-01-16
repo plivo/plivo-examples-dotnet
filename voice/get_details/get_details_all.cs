@@ -1,41 +1,33 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace send_sms
-{
-    class bulk_sms
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace get_details {
+  class get_all_call_details {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            // Without Filters
-             
-            IRestResponse<CDRList> resp = plivo.get_cdrs(new Dictionary<string, string>() {});
+      // Get all call details
+      var response = api.Call.List(
+        limit: 5, 
+        offset: 0
+        );
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Prints the call details
+      Console.Write(response);
 
-            // Filtering the response
-
-            IRestResponse<CDRList> resp = plivo.get_cdrs(new Dictionary<string, string>() 
-            {
-                { "end_time_gt", "2015-02-10 11:47" }, // Filter out calls according to the time of completion. gte stands for greater than or equal.
-                { "call_direction", "outbound" }, // Filter the results by call direction. The valid inputs are inbound and outbound
-                { "from_number","1111111111"}, // Filter the results by the number from where the call originated
-                { "to_number","2222222222"}, // Filter the results by the number to which the call was made
-                { "limit","2"}, // The number of results per page
-                { "offset","0"} // The number of value items by which the results should be offset
-            });
-
-            //Prints the message details
-            Console.Write(resp.Content);
-
-            Console.ReadLine();
-        }
+      // Filtering the response
+      var response = api.Call.List(
+        limit: 5, 
+        offset: 0, 
+        fromNumber: "1111111111", 
+        toNumber: "2222222222", 
+        callDirection: "outbound"
+      );
+      // Prints the call details
+      Console.Write(Response);
     }
+  }
 }
 
 // Sample output

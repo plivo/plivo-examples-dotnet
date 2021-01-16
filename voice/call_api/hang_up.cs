@@ -3,25 +3,20 @@ using System.Collections.Generic;
 using RestSharp;
 using Plivo.API;
 
-namespace make_calls
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-             
-            IRestResponse<GenericResponse> resp = plivo.hangup_call(new Dictionary<string, string>() 
-            {
-                { "call_uuid", "defb0706-86a6-11e4-b303-498d468c930b" } // UUID of the call to be hung up
-            });
-
-            //Prints the response
-            Console.Write(resp.Content);
-
-            Console.ReadLine();
-        }
+namespace make_calls {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      try {
+        var response = api.Call.Delete(
+          callUuid: "10c94053-73b4-46fe-b74a-12159d1d3d60" //UUID of the call
+        );
+        Console.WriteLine(response);
+      } catch (PlivoRestException e) {
+        Console.WriteLine("Exception: " + e.Message);
+      }
     }
+  }
 }
 
 /*

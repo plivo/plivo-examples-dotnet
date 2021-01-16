@@ -1,37 +1,27 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace Get_Details_All
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace Get_Details_All {
+  class Program {
+    static void Main(string[] args) {
 
-            IRestResponse<MessageList> resp = plivo.get_messages();
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Get details of all the messages
+      var response = api.Message.List(
+      limit: 10, offset: 0, );
 
-            // Filter the response
-            IRestResponse<MessageList> response = plivo.get_messages(new Dictionary<string, string>() 
-            {
-                { "limit", "2" }, // Number of results per page
-                { "offset", "0" }, // The number of value items by which the results should be offset
-                { "message_state", "delivered" }, // The state of the essage to be filtered
-                { "message_direction", "inbound"}, // The direction of the message to be filtered
-                { "subaccount", "SubAccount_AUTH_ID"} // The id of the subaccount, if SMS details of the subaccount is needed.
-            });
+      // Prints the message details
+      Console.Write(response);
 
-            // Print the response
-            Console.WriteLine(response.Content);
-            Console.ReadLine();
-        }
+      // Filter the response
+      var response = api.Message.List(
+      limit: 10, offset: 0, subaccount: "subaccount_auth_id", message_state: "delivered", message_direction: "inbound");
+      // Print the response
+      Console.WriteLine(response);
     }
+  }
 }
 
 // Sample Output without fileters

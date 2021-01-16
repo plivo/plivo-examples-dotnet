@@ -1,40 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace link_unlink_apps
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace link_unlink_apps {
+  class Program {
+    static void Main(string[] args) {
 
-            // Link an application to a phone number    
-            IRestResponse<GenericResponse> resp = plivo.link_application_number(new Dictionary<string,string>()
-            {
-                {"number","1111111111"}, // Number that has to be linked to an application
-                {"app_id","16632742496743552"} // Application ID that has to be linked
-            });
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            Console.WriteLine(resp.Content);
-            Debug.WriteLine(resp.Content);
+      // Link an application to a phone number
+      var response = api.Number.Update(
+      app_id: "Test app", number: "17609915566");
 
-            // Unlink an application from a phone number            
-            IRestResponse<GenericResponse> response = plivo.unlink_application_number(new Dictionary<string, string>()
-            {
-                {"number","1111111111"} // Number that has to be unlikned to an application
-            });
+      //Prints the response
+      Console.WriteLine(response);
 
-            Console.WriteLine(response.Content);
-            Debug.WriteLine(response.Content);
-            
-            Console.ReadLine();
-            
-        }
+      // Unlink an application from a phone number            
+      var response = api.Application.Update(
+      appId: "", );
+
+      //Prints the response
+      Console.WriteLine(response);
+
     }
+  }
 }
 
 /*

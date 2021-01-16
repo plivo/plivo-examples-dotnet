@@ -1,27 +1,19 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace send_sms
-{
-    class bulk_sms
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-             
-            IRestResponse<CDR> resp = plivo.get_cdr(new Dictionary<string, string>() 
-            {
-                { "record_id", "064c0e98-b1e2-11e4-989e-c73b3246dc2a" } // The ID of the call
-            });
+namespace get_details {
+  class get_single_call_detail {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Get single call details
+      var response = api.Call.Get(callUuid: "ffa23c86-87ed-4fd5-8310-59594df8ae11");
 
-            Console.ReadLine();
-        }
+      //Prints the call details
+      Console.Write(response);
     }
+  }
 }
 
 // Sample output

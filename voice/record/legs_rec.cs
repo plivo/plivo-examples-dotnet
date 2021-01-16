@@ -5,101 +5,110 @@ using RestSharp;
 using Plivo.XML;
 using Nancy;
 
-namespace legs_rec
-{
-    public class Program : NancyModule
-    {
-        public Program()
-        {
-            Get["/answer_incoming"] = x =>
-            {
-                Plivo.XML.Response resp = new Plivo.XML.Response();
+namespace legs_rec {
+  public class Program: NancyModule {
+    public Program() {
+      Get["/answer_incoming"] = x => {
+        Plivo.XML.Response resp = new Plivo.XML.Response();
 
-                resp.AddRecord(new Dictionary<string, string>()
-                {
-                    {"action","http://dotnettest.apphb.com/record_action"}, // Submit the result of the record to this URL.
-                    {"method","GET"}, // Submit to action url using GET or POST
-                    {"redirect","false"}, // If false, don't redirect to action url, only request the url and continue to next element.
-                    {"recordSession","true"} // Record current call session in background 
-                });
+        resp.AddRecord(new Dictionary < string, string > () {
+          {
+            "action",
+            "http://dotnettest.apphb.com/record_action"
+          }, // Submit the result of the record to this URL.
+          {
+            "method",
+            "GET"
+          }, // Submit to action url using GET or POST
+          {
+            "redirect",
+            "false"
+          }, // If false, don't redirect to action url, only request the url and continue to next element.
+          {
+            "recordSession",
+            "true"
+          } // Record current call session in background 
+        });
 
-                resp.AddWait(new Dictionary<string, string>()
-                {
-                    {"length", "10"} // Time to wait in seconds
-                });
+        resp.AddWait(new Dictionary < string, string > () {
+          {
+            "length",
+            "10"
+          } // Time to wait in seconds
+        });
 
-                Dial dial = new Dial(new Dictionary<string, string>()
-                {
-                    {"callbackUrl",""}, // URL that is notified by Plivo when one of the following events occur : 
-                                        // called party is bridged with caller, called party hangs up, caller has pressed any digit
-                    {"callbackMethod","GET"} // Method used to notify callbackUrl.
-                });
+        Dial dial = new Dial(new Dictionary < string, string > () {
+          {
+            "callbackUrl",
+            ""
+          }, // URL that is notified by Plivo when one of the following events occur : 
+          // called party is bridged with caller, called party hangs up, caller has pressed any digit
+          {
+            "callbackMethod",
+            "GET"
+          } // Method used to notify callbackUrl.
+        });
 
-                dial.AddNumber("1111111111", new Dictionary<string, string>() { });
-                resp.Add(dial);
+        dial.AddNumber("1111111111", new Dictionary < string, string > () {});
+        resp.Add(dial);
 
-                Debug.WriteLine(resp.ToString());
+        Debug.WriteLine(resp.ToString());
 
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
-            
-            // The Callback URL of Dial will make a request to the Record API which will record only the B Leg
-            // Play API is invoked which will play a music only on the B Leg.
-            Get["dial_outbound"] = x =>
-            {
-                string events = Request.Query["Event"];
-                string call_uuid = Request.Query["CallUUID"];
-                Debug.WriteLine("Event : " + events);
-                Debug.WriteLine("Call UUID : " + call_uuid);
+        var output = resp.ToString();
+        var res = (Nancy.Response) output;
+        res.ContentType = "text/xml";
+        return res;
+      };
 
-                if (events == "DialAnswer")
-                {
-                    string auth_id = "Your AUTH_ID";
-                    string auth_token = "Your AUTH_TOKEN";
+      // The Callback URL of Dial will make a request to the Record API which will record only the B Leg
+      // Play API is invoked which will play a music only on the B Leg.
+      Get["dial_outbound"] = x => {
+        string events = Request.Query["Event"];
+        string call_uuid = Request.Query["CallUUID"];
+        Debug.WriteLine("Event : " + events);
+        Debug.WriteLine("Call UUID : " + call_uuid);
 
-                    RestAPI plivo = new RestAPI(auth_id, auth_token);
-                    IRestResponse<Plivo.API.Record> resp = plivo.record(new Dictionary<string, string>()
-                    {
-                        {"call_uuid",call_uuid}, // ID of the call
-                        {"callback_url","http://dotnettest.apphb.com/record_callback"}, // The URL invoked by the API when the recording ends.
-                        {"callback_method","GET"} // The method which is used to invoke the callback_url URL. Defaults to POST.
-                    });
+        if (events == "DialAnswer") {
+          var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+          try {
+            var response = api.Call.StartRecording(
+              callUuid: uuid, // ID of the call
+              callbackUrl: "http://dotnettest.apphb.com/record_callback" // The URL invoked by the API when the recording ends.
+            );
+            Console.WriteLine(response);
+          } catch (PlivoRestException e) {
+            Console.WriteLine("Exception: " + e.Message);
+          }
 
-                    Debug.WriteLine(resp.Content);
+          try {
+            var response = api.Call.StartPlaying(
+              callUuid: call_uuid, // ID of the call
+              urls: new List < string > () {
+                "https://s3.amazonaws.com/plivocloud/music.mp3"
+              } // A single URL or a list of comma separated URLs pointing to an mp3 or wav file.
+            );
+            Console.WriteLine(response);
+          } catch (PlivoRestException e) {
+            Console.WriteLine("Exception: " + e.Message);
+          } else {
+            Debug.WriteLine("Invalid");
+          }
 
-                    RestAPI plivo1 = new RestAPI(auth_id, auth_token);
-                    IRestResponse<GenericResponse> resp1 = plivo1.play(new Dictionary<string, string>()
-                    {
-                        {"call_uuid",call_uuid}, // ID of the call
-                        {"url","https://s3.amazonaws.com/plivocloud/Trumpet.mp3"} // A single URL or a list of comma separated URLs pointing to an mp3 or wav file.
-                    });
+          return "OK";
+        };
 
-                    Debug.WriteLine(resp1.Content);
-                }    
-                else
-                {
-                    Debug.WriteLine("Invalid");                        
-                }
+        // The Callback URL of record api will return the B Leg record details.
+        Get["/record_callback"] = x => {
+          String record_url = Request.Query["RecordUrl"];
+          String record_duration = Request.Query["RecordingDuration"];
+          String record_id = Request.Query["RecordingID"];
 
-                return "OK";
-            };
-
-            // The Callback URL of record api will return the B Leg record details.
-            Get["/record_callback"] = x =>
-            {
-                String record_url = Request.Query["RecordUrl"];
-                String record_duration = Request.Query["RecordingDuration"];
-                String record_id = Request.Query["RecordingID"];
-
-                Debug.WriteLine("Record URL : {0}, Recording Duration : {1}, Record ID : {2}", record_url, record_duration, record_id);
-                return "Done";
-            };
-        }
+          Debug.WriteLine("Record URL : {0}, Recording Duration : {1}, Record ID : {2}", record_url, record_duration, record_id);
+          return "Done";
+        };
+      }
     }
-}
+  }
 
 /*
 Sample Output

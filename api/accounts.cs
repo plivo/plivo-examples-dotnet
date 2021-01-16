@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace accounts
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-            
-            // Get Account details 
-            IRestResponse<Account> resp = plivo.get_account();
+namespace accounts {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the response
-            Console.Write(resp.Content);
+      // Get Account details 
+      var response = api.Account.Get();
 
-            /*
+      //Prints the response
+      Console.WriteLine(response);
+
+      /*
             Sample Output
             {
               "account_type": "standard",
@@ -35,19 +31,14 @@ namespace accounts
             } 
             */
 
-            // Modify Account 
-            IRestResponse<GenericResponse> res = plivo.modify_account(new Dictionary<string, string>()
-            {
-                {"name","Testing"}, // Name of the account holder or business.
-                {"city","City Test"}, //City of the account holder
-                {"address","City address"}, // Address of the account holder 
-                {"timezone","Asia/Kolkata"} // Time zone of the account holder
-            });
+      // Modify Account 
+      var response = api.Account.Update(
+      city: "Test city", name: "Test Account", address: "Test Address");
 
-            //Prints the response
-            Console.Write(res.Content);
+      //Prints the response
+      Console.Write(response);
 
-            /*
+      /*
             Sample Output
             {
               "api_id": "a450e166-b5c2-11e4-b423-22000ac8a2f8",
@@ -55,17 +46,14 @@ namespace accounts
             }
             */
 
-            // Create a sub account
-            IRestResponse<GenericResponse> res1 = plivo.create_subaccount(new Dictionary<string, string>()
-            {
-                {"name","Testing_subaccount"}, // Name of the subaccount
-                {"enabled","True"} // Specify if the subaccount should be enabled or not
-            });
+      // Create a sub account
+      var response = api.Subaccount.Create(
+      enabled: true, name: "Test Subaccount dotNet");
 
-            //Prints the response
-            Console.Write(res1.Content);
+      //Prints the response
+      Console.Write(response);
 
-            /*
+      /*
             Sample Output 
             {
               "api_id": "e4868222-b5c2-11e4-ac1f-22000ac51de6",
@@ -74,35 +62,31 @@ namespace accounts
               "message": "created"
             }  
             */
-            
-            // Modify a sub account
-            IRestResponse<GenericResponse> res2 = plivo.modify_subaccount(new Dictionary<string, string>()
-            {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"}, // Auth ID of the sub acccount that has to be modified
-                {"name","Testing_subaccount"} // Name of the subaccount
-            });
 
-            //Prints the response
-            Console.Write(res2.Content);
+      // Modify a sub account
+      var response = api.Subaccount.Update(
+      id: "SAXXXXXXXXXXXXXXXXXX", // Subaccount_auth_id
+      name: "Updated Subaccount Name");
 
-            /*
+      //Prints the response
+      Console.Write(response);
+
+      /*
             Sample Output
             {
               "api_id": "0fa7a6e8-b5c3-11e4-8ccf-22000afb14f7",
               "message": "changed"
             }
             */
-            
-            // Get details of all sub accounts
-            IRestResponse<SubAccountList> res3 = plivo.get_subaccounts();
 
-            //Prints the response
-            Console.Write(res3.Content);
+      // Get details of all sub accounts
+      var response = api.Subaccount.List(
+      limit: 5, offset: 0);
 
-            // Print the total number of sub accounts
-            Console.Write("Total count : " + res3.Data.meta.total_count);
+      //Prints the response
+      Console.Write(response);
 
-            /*
+      /*
             Sample Output
             {
               "api_id": "3f1fad62-b5c3-11e4-ac1f-22000ac51de6",
@@ -152,17 +136,16 @@ namespace accounts
              Total count ; 3 
             
             */
-            
-            // Get details of a single sub account
-            IRestResponse<SubAccount> res4 = plivo.get_subaccount(new Dictionary<string, string>()
-            {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"} // Auth ID of the sub acccount for which the details hae to be retrieved
-            });
 
-            //Prints the response
-            Console.Write(res4.Content);
+      // Get details of a single sub account
+      var response = api.Subaccount.Get(
+      id: "SAXXXXXXXXXXXXXXXXXX" // Subaccount_auth_id
+      );
 
-            /*
+      //Prints the response
+      Console.WriteLine(response);
+
+      /*
             Sample Output 
             {
               "account": "/v1/Account/XXXXXXXXXXXXXXXXX/",
@@ -177,19 +160,14 @@ namespace accounts
               "resource_uri": "/v1/Account/XXXXXXXXXXXXXXXXX/Subaccount/SAOWQ0NJFKMTRKMTRMZT/"
             } 
             */
-            
-            // Delete a sub account
-            IRestResponse<GenericResponse> res5 = plivo.delete_subaccount(new Dictionary<string, string>()
-            {
-                {"subauth_id","SAOWQ0NJFKMTRKMTRMZT"} // Auth ID of the sub acccount that has to be deleted
-            });
 
-            //Prints the response
-            Console.Write(res5.Content);
+      // Delete a sub account
+      var response = api.Subaccount.Delete(
+      id: "SAXXXXXXXXXXXXXXXXXX", // Subaccount_auth_id
+      cascade: true);
+      Console.WriteLine(response);
 
-            Console.ReadLine();
-            
-            /* 
+      /* 
             Successful Output 
             " "
             Unsuccessful Output
@@ -198,6 +176,6 @@ namespace accounts
               "error": "not found"
             } 
             */
-        }
     }
+  }
 }

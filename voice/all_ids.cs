@@ -3,41 +3,38 @@ using System.Collections.Generic;
 using RestSharp;
 using Plivo.API;
 
-namespace make_calls
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace make_calls {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      try {
+        var response = api.Call.Create(
+          to: new List < String > {"141512389112"}, // The phone number to which the call has to be placed
+          from: "+14151234567", // The phone number to be used as the caller Id 
+          answerMethod: "GET", // The method used to invoke the answer_url
+          answerUrl: "http://s3.amazonaws.com/static.plivo.com/answer.xml", // The URL invoked by Plivo when the outbound call is answered
+          // Example for Asynchronous request
+          // callbackUrl: "http://dotnettest.apphb.com/callback",
+          // callbackMethod:"GET"
+        );
+        Console.WriteLine(response);
+      } catch (PlivoRestException e) {
+        Console.WriteLine("Exception: " + e.Message);
+      }
 
-            // API ID is returned for every API request. 
-            // Request UUID is request id of the call. This ID is returned as soon as the call is fired irrespective of whether the call is answered or not
-             
-            IRestResponse<Call> resp = plivo.make_call(new Dictionary<string, string>() 
-            {
-                { "from", "1111111111" }, // The phone number to which the call has to be placed
-                { "to", "2222222222" }, // The phone number to be used as the caller Id
-                { "answer_url", "http://dotnettest.apphb.com/speak" }, // The URL invoked by Plivo when the outbound call is answered
-                { "answer_method","GET"} // The method used to invoke the answer_url
-            });
+      // Call UUID is th id of a live call. This ID is returned only after the call is answered.
 
-            //Prints the response
-            Console.Write(resp.Content);
-
-            // Call UUID is th id of a live call. This ID is returned only after the call is answered.
-
-            IRestResponse<LiveCall> resp = plivo.get_live_call(new Dictionary<string,string>() 
-            {   
-                { "call_uuid", "cd8fb3a0-b2a6-11e4-9a04-f5504e456438" } // The status of the call
-            });
-
-            //Prints the message details
-            Console.Write(resp.Content);
-
-            Console.ReadLine();
-        }
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      try {
+        var response = api.Call.Get(
+          callUuid: "ffa23c86-87ed-4fd5-8310-59594df8ae11" // ID of the call
+        );
+        Console.WriteLine(response);
+      } catch (PlivoRestException e) {
+        Console.WriteLine("Exception: " + e.Message);
+      }
     }
+  }
 }
 
 // Sample output

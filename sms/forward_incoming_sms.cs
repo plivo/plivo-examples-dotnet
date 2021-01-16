@@ -1,45 +1,43 @@
+using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo.XML;
 
-namespace Forward_Incoming_Sms
-{
-    public class Program : NancyModule
-    {
-        public Program()
-        {
-            Post["/receive_sms"] = x =>
-            {
-                String from_number = Request.Form["From"]; // Sender's phone number
-                String to_number = Request.Form["To"]; // Receiver's phone number
-                String text = Request.Form["Text"]; // The text which was received
+namespace Forward_Incoming_Sms {
+  public class Program: NancyModule {
+    public Program() {
+      Post("/forward_incoming_sms", parameters =>{
+        String from_number = Request.Form["From"]; // Sender's phone number
+        String to_number = Request.Form["To"]; // Receiver's phone number
+        String text = Request.Form["Text"]; // The text which was received
 
+        Console.WriteLine("From : {0}, To : {1}, Text : {2}", from_number, to_number, text);
 
-                Console.WriteLine("From : {0}, To : {1}, Text : {2}", from_number, to_number, text);
+        String to_forward = "1111111111"; // The phone number to which the sms has to be forwarded
+        Plivo.XML.Response resp = new Plivo.XML.Response();
 
-                String to_forward = "1111111111"; // The phone number to which the sms has to be forwarded
+        // Generate the Message XML
+        Plivo.XML.Response resp = new Plivo.XML.Response();
+        resp.AddMessage(text, new Dictionary < string, string > () {
+          {"src",to_number},
+          {"dst",to_forward},
+          {"type","sms"},
+          {"callbackUrl","http://foo.com/sms_status/"},
+          {"callbackMethod","POST"}
+        });
 
-                Plivo.XML.Response resp = new Plivo.XML.Response();
+        // Print the XML
+        Console.WriteLine(resp.ToString());
 
-                // Generate the Message XML
-                resp.AddMessage(text, new Dictionary<string, string>() {
-                { "src", to_number },
-                { "dst", to_forward }
-                });
-
-                // Print the XML
-                Console.WriteLine(resp.ToString());
-
-                // Return the XML
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
-        }
+        // Return the XML
+        var output = resp.ToString();
+        var res = (Nancy.Response) output;
+        res.ContentType = "application/xml";
+        return res;
+      };
     }
+  }
 }
 
 // Sample output
