@@ -1,41 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace Send_Sms
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace Send_Sms {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
-            {
-                { "src", "1111111111" }, // Sender's phone number with country code
-                { "dst", "2222222222" }, // Receiver's phone number wiht country code
-                { "text", "Hi, text from Plivo." }, // Your SMS text message
-                // To send Unicode text
-                // {"text", "こんにちは、元気ですか？"} // Your SMS text message - Japanese
-                // {"text", "Ce est texte généré aléatoirement"} // Your SMS text message - French
-                { "url", "http://dotnettest.apphb.com/delivery_report"}, // The URL to which with the status of the message is sent
-                { "method", "POST"} // Method to invoke the url
-            });
+      // Send a message
+      var response = api.Message.Create(
+      src: "1111111111", // Sender's phone number with country code
+      dst: new List < String > {"2222222222"}, // Receiver's phone number wiht country code
+      text: "Hi, text from plivo", // Your SMS text message
+      );
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Prints the message details
+      Console.Write(response);
 
-            // Print the message_uuid
-            Console.WriteLine(resp.Data.message_uuid[0]);
+      // Print the message_uuid
+      Console.WriteLine(response.MessageUuid[0]);
 
-            // Print the api_id
-            Console.WriteLine(resp.Data.api_id);
-
-            Console.ReadLine();
-        }
+      // Print the api_id
+      Console.WriteLine(response.ApiId);
     }
+  }
 }
 
 // Sample Output

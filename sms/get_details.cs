@@ -1,28 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace Get_Details
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace Get_Details {
+  class Program {
+    static void Main(string[] args) {
 
-            IRestResponse<Message> resp = plivo.get_message(new Dictionary<string, string>() 
-            {
-                { "record_id", "1aead330-8ff9-11e4-9bd8-22000afa12b9" } // Message UUID
-            });
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Get single message details
+      var response = api.Message.Get(
+      messageUuid: "your_message_uuid");
 
-            Console.ReadLine();
-        }
+      // Prints the message details
+      Console.WriteLine(response);
+
+      Console.ReadLine();
     }
+  }
 }
 
 // Sample Output

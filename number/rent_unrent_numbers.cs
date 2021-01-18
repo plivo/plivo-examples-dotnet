@@ -1,61 +1,48 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace rent_unrent_numbers
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace rent_unrent_numbers {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            // Search for a new phone number
-            IRestResponse<PhoneNumberList> resp = plivo.search_phone_numbers(new Dictionary<string,string>()
-            {
-                {"country_iso","US"}, // The ISO code A2 of the country
-                {"type","local"}, // The type of number you are looking for. The possible number types are local, national and tollfree.
-                {"pattern","210"}, // Represents the pattern of the number to be searched.
-                {"region","Texas"} // This filter is only applicable when the number_type is local. Region based filtering can be performed.
-            });
+      // Search for a new phone number
+      var response = api.Phonenumber.List(
+      countryIso: "GB", // The ISO code A2 of the country
+      type: "local", // The type of number you are looking for. The possible number types are local, national and tollfree.
+      pattern: "210", // Represents the pattern of the number to be searched.
+      region: "Texas" // This filter is only applicable when the number_type is local. Region based filtering can be performed.
+      );
 
-            Console.WriteLine(resp.Content);
-            Debug.WriteLine(resp.Content);
-            
-            // Buy a new phone number
-            IRestResponse<PhoneNumberResponse> res = plivo.buy_phone_number(new Dictionary<string, string>()
-            {
-                {"number","12109206499"} // The phone number that has to be rented
-            });
+      // Prints the response
+      Console.WriteLine(response);
 
-            Console.WriteLine(res.Content);
-            Debug.WriteLine(res.Content);
+      // Buy a new phone number
+      var response = api.Phonenumber.Buy(
+      number: "10123456789");
 
-            //Modify a number
-            IRestResponse<PhoneNumberResponse> res = plivo.modify_number(new Dictionary<string, string>()
-            {
-                {"number","12109206499"}, // The phone number that has to be rented
-                {"alias","Test"}, //The textual name given to the number
-                {"subaccount","Your SUB_AUTH_ID"} //The auth_id of the subaccount to which this number should be added.
-            });
+      // Prints the response
+      Console.WriteLine(response);
 
-            Console.WriteLine(res.Content);
-            Debug.WriteLine(res.Content);            
-            
-            // Unrent a number
-            IRestResponse<GenericResponse> response = plivo.unrent_number(new Dictionary<string, string>()
-            {
-                {"number","12109206499"} // Number that has to be unrented
-            });
+      // Modify a number
+      var response = api.Number.Update(
+      alias: "Updated Alias", // The textual name given to the number
+      number: "12109206499" // The phone number that has to be rented
+      );
 
-            Console.WriteLine(response.Content);
-            Debug.WriteLine(response.Content);
-            
-            Console.ReadLine();
-        }
+      //Prints the response
+      Console.WriteLine(response);
+
+      // Unrent a number
+      var response = api.Number.Delete(
+      number: "17609915566" // Number that has to be unrented
+      );
+
+      // Prints the response
+      Console.WriteLine(response);
     }
+  }
 }
 
 /*
@@ -116,7 +103,7 @@ Buy a new phone number
   "message": "created",
   "numbers": [
     {
-      "number": "12109206499",
+      "number": "10123456789",
       "status": "Success"
     }
   ],

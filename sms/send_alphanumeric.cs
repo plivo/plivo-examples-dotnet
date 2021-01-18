@@ -1,29 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace Send_Alpha
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-           
-            IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
-            {
-                { "src", "ALPHA" }, // Alphanumeric sender ID
-                { "dst", "1111111111" }, // Receiver's phone number wiht country code
-                { "text", "Hi, text from plivo" } // Your SMS text message
-            });
+namespace Send_Alpha {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the message details
-            Console.Write(resp.Content);
-            Console.ReadLine();
-        }
+      // Send a Alpha source message
+      var response = api.Message.Create(
+      src: "ALPHA", // Alphanumeric sender ID
+      dst: new List < String > {"2222222222"},
+      // Receiver's phone number wiht country code
+      text: "Hi, text from plivo", // Your SMS text message
+      );
+
+      // Prints the message details
+      Console.Write(response);
     }
+  }
 }
 
 // Sample output

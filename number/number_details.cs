@@ -1,35 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace number_detils
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace number_detils {
+  class Program {
+    static void Main(string[] args) {
 
-            // Get all numbers
-            IRestResponse<NumberList> resp = plivo.get_numbers();
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            Console.WriteLine(resp.Content);
-            Debug.WriteLine(resp.Content);
+      // Get all numbers
+      var response = api.Number.List(
+      limit: 5, offset: 0);
 
-            // Get a particular number
-            IRestResponse<Number> res = plivo.get_number(new Dictionary<string, string>()
-            {
-                {"number","1111111111"} // Phone number for which the details have to be retrieved
-            });
+      //Prints the response
+      Console.WriteLine(response);
 
-            Console.WriteLine(res.Content);
-            Debug.WriteLine(res.Content);
-            
-            Console.ReadLine();
-        }
+      // Get a particular number
+      var response = api.Number.Get(
+      number: "1111111111");
+
+      //Prints the response
+      Console.WriteLine(response);
+
     }
+  }
 }
 
 /*

@@ -1,27 +1,19 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace apps
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-            
-            // Create a new appplication
-            IRestResponse<GenericResponse> resp = plivo.create_application(new Dictionary<string,string>()
-            {
-              {"answer_url", "http://example.com"}, // The URL Plivo will fetch when a call executes this application
-              {"app_name", "Tesp_app"} // The name of your application
-            });
+namespace apps {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the response
-            Console.Write(resp.Content);
+      // Create a new appplication
+      var response = api.Application.Create(
+      appName: "Test Application", answerUrl: "http://answer.url");
+      //Prints the response
+      Console.WriteLine(response);
 
-            /*
+      /*
             Sample Output
             {
               "api_id": "9f20d25a-b5c7-11e4-9107-22000afaaa90",
@@ -30,24 +22,15 @@ namespace apps
             }
              
             */
-            
-            // Get details of all existing applications
-            IRestResponse<ApplicationList> res = plivo.get_applications(new Dictionary<string, string>(){ });
 
-            //Prints the response
-            Console.Write(res.Content);
+      // Get details of all existing applications
+      var response = api.Application.List(
+      limit: 5, offset: 0);
 
-            // Prints the total number of apps
-            Console.WriteLine("Total count : " + res.Data.meta.total_count);
+      //Prints the response
+      Console.WriteLine(response);
 
-            // Prints the public_uri, default_app
-            int count = res.Data.meta.total_count;
-            for (int i = 0; i < count; i++)
-            {
-                Console.WriteLine("public_uri : {0}, default_app : {1}",res.Data.objects[i].public_uri, res.Data.objects[i].default_app);
-            }
-
-            /*
+      /*
             Sample Output
             {
               "api_id": "b9125c88-b5c7-11e4-af95-22000ac54c79",
@@ -99,30 +82,16 @@ namespace apps
                 }
               ]
             }
-            Total count : 9
-             
-            public_uri : False, default_app : False
-            public_uri : False, default_app : False
-            public_uri : False, default_app : False
-            public_uri : True, default_app : True
-            public_uri : False, default_app : False
-            public_uri : True, default_app : False
-            public_uri : False, default_app : False
-            public_uri : False, default_app : False
-            public_uri : False, default_app : False
-
             */
-                       
-            // Get details of a single application
-            IRestResponse<Application> res1 = plivo.get_application(new Dictionary<string, string>()
-            {
-                {"app_id","21154456373728579"} // ID of the application for which the details have to be retrieved
-            });
 
-            //Prints the response
-            Console.Write(res1.Content);
+      // Get details of a single application
+      var response = api.Application.Get(
+      appId: "15784735442685051");
 
-            /*
+      //Prints the response
+      Console.Write(response);
+
+      /*
             Sample Output 
             {
               "answer_method": "POST",
@@ -146,35 +115,30 @@ namespace apps
             }
   
             */
-            
-            // Modify an application
-            IRestResponse<GenericResponse> res2 = plivo.modify_application(new Dictionary<string, string>()
-            {
-                {"app_id","21154456373728579"}, // ID of the application that has to be modified
-                {"answer_url","http://exampletest.com"} // Values that have to be updated
-            });
 
-            //Prints the response
-            Console.Write(res2.Content);
+      // Modify an application
+      var response = api.Application.Update(
+      appId: "15784735442685051", answerUrl: "http://updated.answer.url");
 
-            /*
+      //Prints the response
+      Console.WriteLine(response);
+
+      /*
             Sample Output
             {
               "api_id": "4117403e-b5c9-11e4-8ccf-22000afb14f7",
               "message": "changed"
             }
             */
-            
-            // Delete an application
-            IRestResponse<GenericResponse> res3 = plivo.delete_application(new Dictionary<string,string>()
-            {
-              {"app_id","21154456373728579"}  // ID of the application that as to be deleted
-            });
 
-            //Prints the response
-            Console.Write(res3.Content);
+      // Delete an application
+      var response = api.Application.Delete(
+      appId: "15784735442685051");
 
-            /*
+      //Prints the response
+      Console.Write(response);
+
+      /*
             Successful Output
             " "
 
@@ -184,7 +148,6 @@ namespace apps
               "error": "not found"
             }
             */
-        }
     }
+  }
 }
-            

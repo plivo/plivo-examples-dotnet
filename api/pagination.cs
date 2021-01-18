@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
 namespace apps
 {
@@ -9,17 +8,20 @@ namespace apps
     {
         static void Main(string[] args)
         {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-
-            // Get details of all existing applications
-            IRestResponse<ApplicationList> res = plivo.get_applications(new Dictionary<string, string>(){ });
+          var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+          
+          // Get details of all existing applications
+          var response = api.Application.List(
+            limit:5,
+            offset:0
+            );
 
             //Prints the response
-            Console.Write(res.Content);
+          Console.Write(response);
 
-            /*
-            Sample Output
-            {
+          /*
+          Sample Output
+           {
               "api_id": "b9125c88-b5c7-11e4-af95-22000ac54c79",
               "meta": {
                 "limit": 2,
@@ -72,7 +74,7 @@ namespace apps
             */
 
             // Print the link to view the next page of results
-            Console.WriteLine(res.Data.meta.next);
+            Console.WriteLine(response.Meta.Next);
 
             /*
             Sample successful output

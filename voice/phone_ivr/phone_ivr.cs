@@ -1,141 +1,135 @@
 using System;
+using Plivo.XML;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
-using RestSharp;
-using Plivo.XML;
-using Nancy;
 
-namespace phone_ivr
+namespace Ivrphonetree.Controllers
 {
-    public class Program : NancyModule
+    public class IvrController : Controller
     {
-        public Program()
+        //  This file will be played when a caller presses 2.
+        String PlivoSong = "https://s3.amazonaws.com/plivocloud/music.mp3";
+        // This is the message that Plivo reads when the caller dials in
+        String IvrMessage1 = "Welcome to the Plivo IVR Demo App. Press 1 to listen to a pre recorded text in different languages. Press 2 to listen to a song.";
+        String IvrMessage2 = "Press 1 for English. Press 2 for French. Press 3 for Russian";
+        // This is the message that Plivo reads when the caller does nothing at all
+        String NoinputMessage = "Sorry, I didn't catch that. Please hangup and try again later.";
+        // This is the message that Plivo reads when the caller inputs a wrong number.
+        String WronginputMessage = "Sorry, it's a wrong input.";
+
+        // GET: /<controller>/
+        public IActionResult Index()
         {
-            //  This file will be played when a caller presses 2.
-            String PLIVO_SONG = "https://s3.amazonaws.com/plivocloud/music.mp3";
-            // This is the message that Plivo reads when the caller dials in
-            String IVR_MESSAGE1 = "Welcome to the Plivo IVR Demo App. Press 1 to listen to a pre recorded text in different languages. Press 2 to listen to a song.";
+            var resp = new Response();
+            Plivo.XML.GetInput get_input = new
+                Plivo.XML.GetInput("",
+                    new Dictionary<string, string>()
+                    {
+                        {"action", "https://www.foo.com/ivr/firstbranch/"},
+                        {"method", "POST"},
+                        {"digitEndTimeout", "5"},
+                        {"inputType", "dtmf"},
+                        {"redirect", "true"},
+                    });
+            resp.Add(get_input);
+            get_input.AddSpeak(IvrMessage1,
+                new Dictionary<string, string>() { });
+            resp.AddSpeak(NoinputMessage,
+                new Dictionary<string, string>() { });
 
-            String IVR_MESSAGE2 = "Press 1 for English. Press 2 for French. Press 3 for Russian";
-            // This is the message that Plivo reads when the caller does nothing at all
-            String NO_INPUT_MESSAGE = "Sorry, I didn't catch that. Please hangup and try again later.";
-            // This is the message that Plivo reads when the caller inputs a wrong number.
-            String WRONG_INPUT_MESSAGE = "Sorry, it's a wrong input.";
+            var output = resp.ToString();
+            return this.Content(output, "text/xml");
+        }
+        // First branch of IVR phone tree
+        public IActionResult FirstBranch()
+        {
+            String digit = Request.Query["Digits"];
+            Debug.WriteLine("Digit pressed : {0}", digit);
 
-            Get["/response/ivr"] = x =>
+            var resp = new Response();
+
+            if (digit == "1")
             {
-                Plivo.XML.Response resp = new Plivo.XML.Response();
-                String getdigits_action_url = "http://dotnettest.apphb.com/response/ivr";
+                String getinput_action_url = "https://www.foo.com/ivr/secondbranch/";
 
-                // Add GetDigits XML Tag
-                GetDigits gd = new GetDigits("", new Dictionary<string, string>()
-                {
-                    {"action", getdigits_action_url},
-                    {"method", "POST"},
-                    {"timeout","7"},
-                    {"numDigits","1"},
-                    {"retries","1"}
-                });
-
+                // Add GetInput XML Tag
+                Plivo.XML.GetInput get_input = new
+                Plivo.XML.GetInput("",
+                    new Dictionary<string, string>()
+                    {
+                        {"action", getinput_action_url},
+                        {"method", "POST"},
+                        {"digitEndTimeout", "5"},
+                        {"finishOnKey", "#"},
+                        {"inputType", "dtmf"},
+                        {"redirect", "true"},
+                    });
+                resp.Add(get_input);
+                get_input.AddSpeak(IvrMessage2,
+                    new Dictionary<string, string>() { });
+                resp.AddSpeak(NoinputMessage,
+                    new Dictionary<string, string>() { });
+            }
+            else if (digit == "2")
+            {
+                // Add Play XML Tag
+                resp.AddPlay(PlivoSong, new Dictionary<string, string>() { });
+            }
+            else
+            {
                 // Add Speak XML Tag
-                gd.AddSpeak(IVR_MESSAGE1, new Dictionary<string, string>() { });
-                resp.Add(gd);
-                // Add Speak XML Tag
-                resp.AddSpeak(NO_INPUT_MESSAGE, new Dictionary<string, string>() { });
+                resp.AddSpeak(WronginputMessage,
+                    new Dictionary<string, string>() { });
+            }
 
-                Debug.WriteLine(resp.ToString());
+            Debug.WriteLine(resp.ToString());
 
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
+            var output = resp.ToString();
+            return this.Content(output, "text/xml");
+        }
+        // Second branch of IVR phone tree
+        public IActionResult SecondBranch()
+        {
+            var resp = new Response();
+            String digit = Request.Query["Digits"];
+            Debug.WriteLine("Digit pressed : {0}", digit);
 
-            Post["/response/ivr"] = x =>
+            // Add Speak XMLTag
+            if (digit == "1")
             {
-                String digit = Request.Form["Digits"];
-                Debug.WriteLine("Digit pressed : {0}", digit);
-
-                Plivo.XML.Response resp = new Plivo.XML.Response();
-
-                if (digit == "1")
-                {
-                    String getdigits_action_url = "http://dotnettest.apphb.com/response/tree";
-
-                    // Add GetDigits XML Tag
-                    GetDigits gd = new GetDigits("", new Dictionary<string, string>()
-                {
-                    {"action", getdigits_action_url}, // The URL to which the digits are sent. 
-                    {"method", "GET"}, // Submit to action URL using GET or POST.
-                    {"timeout","7"}, // Time in seconds to wait to receive the first digit.
-                    {"numDigits","1"}, // Maximum number of digits to be processed in the current operation. 
-                    {"retries","1"} // Indicates the number of retries the user is allowed to input the digits
+                resp.AddSpeak("This message is being read out in English",
+                   new Dictionary<string, string>()
+                   {
+                    { "language","en-GB"}
                 });
-
-                    // Add Speak XML Tag
-                    gd.AddSpeak(IVR_MESSAGE2, new Dictionary<string, string>() { });
-                    resp.Add(gd);
-                    // Add Speak XML Tag
-                    resp.AddSpeak(NO_INPUT_MESSAGE, new Dictionary<string, string>() { });
-                }
-                else if (digit == "2")
-                {
-                    // Add Play XML Tag
-                    resp.AddPlay(PLIVO_SONG, new Dictionary<string, string>() { });
-                }
-                else
-                {
-                    // Add Speak XML Tag
-                    resp.AddSpeak(WRONG_INPUT_MESSAGE, new Dictionary<string, string>() { });
-                }
-
-                Debug.WriteLine(resp.ToString());
-
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
-
-            Get["/response/tree"] = x =>
+            }
+            else if (digit == "2")
             {
-                Plivo.XML.Response resp = new Plivo.XML.Response();
-                String digit = Request.Query["Digits"];
+                resp.AddSpeak("Ce message est lu en français",
+                   new Dictionary<string, string>()
+                   {
+                    { "language","fr-FR"}
+                });
+            }
+            else if (digit == "3")
+            {
+                resp.AddSpeak("Это сообщение было прочитано в России",
+                   new Dictionary<string, string>()
+                   {
+                    { "language","ru-RU"}
+                });
+            }
+            else
+            {
+                resp.AddSpeak(WronginputMessage,
+                    new Dictionary<string, string>() { });
+            }
 
-                // Add Speak XMLTag
-                if (digit == "1")
-                {
-                    resp.AddSpeak("This message is being read out in English", new Dictionary<string, string>()
-                    {
-                        {"language","en-GB"}
-                    });
-                }
-                else if (digit == "2")
-                {
-                    resp.AddSpeak("Ce message est lu en français", new Dictionary<string, string>()
-                    {
-                        {"language","fr-FR"}
-                    });
-                }
-                else if (digit == "3")
-                {
-                    resp.AddSpeak("Это сообщение было прочитано в России", new Dictionary<string, string>()
-                    {
-                        {"language","ru-RU"}
-                    });
-                }
-                else
-                {
-                    resp.AddSpeak(WRONG_INPUT_MESSAGE, new Dictionary<string, string>() { });
-                }
+            Debug.WriteLine(resp.ToString());
 
-                Debug.WriteLine(resp.ToString());
-
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
+            var output = resp.ToString();
+            return this.Content(output, "text/xml");
         }
     }
 }

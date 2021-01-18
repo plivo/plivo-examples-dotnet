@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using RestSharp;
 using Plivo.API;
 
-namespace conf_call
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-             
-            IRestResponse<Call> resp = plivo.make_call(new Dictionary<string,string>() 
-            {   
-                { "to", "2222222222<3333333333" }, // The phone number to which the call has to be placed
-                {"from", "1111111111"}, // The phone number to be used as the caller id
-                {"answer_url","http://dotnettest.apphb.com/response/conference"}, // The URL invoked by Plivo when the outbound call is answered
-                {"answer_method","GET"} // The method used to call the answer_url
-            });
+namespace conf_call {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      try {
+        var response = api.Call.Create(
+          to: new List < String > {
+            "141512389112"
+          }, // The phone number to which the call has to be placed
+          from: "+14151234567", // The phone number to be used as the caller Id 
+          answerMethod: "GET", // The method used to invoke the answer_url
+          answerUrl: "https://s3.amazonaws.com/plivosamplexml/conference_url.xml", // The URL invoked by Plivo when the outbound call is answered
+        );
+        Console.WriteLine(response);
+      } catch (PlivoRestException e) {
+        Console.WriteLine("Exception: " + e.Message);
+      }
 
-            //Prints the message details
-            Console.Write(resp.Content);
-
-            Console.ReadLine();
-        }
     }
+  }
 }
 
 // Sample output

@@ -1,52 +1,50 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
-namespace Bulk_Sms
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+namespace Bulk_Sms {
+  class Program {
+    static void Main(string[] args) {
 
-            IRestResponse<MessageResponse> resp = plivo.send_message(new Dictionary<string, string>() 
-            {
-                { "src", "1111111111" }, // Sender's phone number with country code
-                { "dst", "2222222222<3333333333" }, // Receiver's phone number wiht country code
-                { "text", "Hi, text from Plivo." } // Your SMS text message
-            });
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
 
-            //Prints the message details
-            Console.Write(resp.Content);
+      // Send Bulk SMS
+      var response = api.Message.Create(
+      src: "1111111111", // Sender's phone number with country code
+      dst: new List < String > {
+        "2222222222<3333333333"
+      },
+      // Receiver's phone number wiht country code
+      text: "Hello, this is sample text", // Your SMS text message
+      url: "http://foo.com/sms_status/");
 
-            // Loop through the message_uuid
-            int count = resp.Data.message_uuid.Count;
-            for (int i = 0; i < count; i++)
-            {
-                Console.WriteLine("Message UUID : {0}", resp.Data.message_uuid[i]);
-            }
-            
-            // Print the api_id
-            Console.WriteLine("Api ID : {0}", resp.Data.api_id);
+      // Prints the message details
+      Console.Write(response);
 
-            // When an invalid number is given as a dst parameter, an error will be thrown and the message will not be sent 
+      // Loop through the message_uuid
+      int count = response.MessageUuid.Count;
+      for (int i = 0; i < count; i++) {
+        Console.WriteLine("Message UUID : {0}", response.MessageUuid[i]);
+      }
 
-            IRestResponse<MessageResponse> response = plivo.send_message(new Dictionary<string, string>() 
-            {
-                { "src", "1111111111" }, // Sender's phone number with country code
-                { "dst", "111111<2222222222" }, // Receiver's phone number wiht country code
-                { "text", "Hi, text from Plivo." } // Your SMS text message
-            });
+      // Print the api_id
+      Console.WriteLine("Api ID : {0}", response.ApiId);
 
-            //Prints the message details
-            Console.Write(response.Content);
+      // When an invalid number is given as a dst parameter, an error will be thrown and the message will not be sent 
+      var response = api.Message.Create(
+      src: "1111111111", // Sender's phone number with country code
+      dst: new List < String > {
+        "222222<3333333333"
+      },
+      // Receiver's phone number wiht country code
+      text: "Hello, this is sample text", // Your SMS text message
+      url: "http://foo.com/sms_status/");
 
-            Console.ReadLine();
-        }
+      // Prints the message details
+      Console.Write(response);
+
     }
+  }
 }
 
 // Sample output
@@ -68,6 +66,6 @@ Api ID : a6d93290-a0b3-11e4-96e3-22000abcb9af
 /*
 {
   "api_id": "e5f6c53c-a0b3-11e4-a2d1-22000ac5040c",
-  "error": "111111 is not a valid phone number"
+  "error": "222222 is not a valid phone number"
 }
 */

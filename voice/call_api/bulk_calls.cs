@@ -3,28 +3,23 @@ using System.Collections.Generic;
 using RestSharp;
 using Plivo.API;
 
-namespace bulk_calls
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
-             
-            IRestResponse<Call> resp = plivo.make_call(new Dictionary<string, string>() 
-            {
-                { "from", "1111111111" }, // The phone number to which the call has to be placed
-                { "to", "2222222222<3333333333" }, // The phone number to be used as the caller Id
-                { "answer_url", "http://dotnettest.apphb.com/speak" }, // The URL invoked by Plivo when the outbound call is answered
-                {"answer_method","GET"}, // The method used to invoke the answer_url
-            });
-
-            //Prints the response
-            Console.Write(resp.Content);
-
-            Console.ReadLine();
-        }
+namespace bulk_calls {
+  class Program {
+    static void Main(string[] args) {
+      var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
+      try {
+        var response = api.Call.Create(
+          to: new List < String > {"141512389112<14151231213"}, // The phone number to which the call has to be placed
+          from: "+14151234567", // The phone number to be used as the caller Id 
+          answerMethod: "GET", // The method used to invoke the answer_url
+          answerUrl: "http://s3.amazonaws.com/static.plivo.com/answer.xml" // The URL invoked by Plivo when the outbound call is answered
+        );
+        Console.WriteLine(response);
+      } catch (PlivoRestException e) {
+        Console.WriteLine("Exception: " + e.Message);
+      }
     }
+  }
 }
 
 // Sample output

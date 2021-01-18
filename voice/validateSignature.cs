@@ -3,60 +3,64 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using RestSharp;
 using Plivo.XML;
-using Plivo.Util;
-using Plivo.API;
+using Plivo;
 using Nancy;
 
-namespace validateSignature
+namespace plivo_dotnet_app
 {
-    public class Program : NancyModule
+    public sealed class Program : NancyModule
     {
         public Program()
         {
-            Get["/speak/"] = x =>
+            Get("/speak/", x =>
             {
-                IEnumerable<string> signature = Request.Headers["X-Plivo-Signature"];
-                String[] sign = (String[])signature;
-                String actualsignature = sign[0];
-
-                String auth_token = "Your AUHT TOKEN";
-
-                Dictionary<string,string> parameters = new Dictionary<string,string>();
-                if (Request.Query != null)
-                {
-                    foreach (String key in Request.Query.Keys)
-                    {
-                        String value = Request.Query[key];
-                        parameters.Add(key, value);
-                    }
-                }
-
-                String url = Request.Url.SiteBase + Request.Url.Path;
-                
-                if (Request.Form != null)
-                {
-                    foreach (String key in Request.Form.Keys)
-                    {
-                        String value = Request.Form[key];
-                        parameters.Add(key, value);
-                    }
-                }
-
-                bool valid = XPlivoSignature.Verify(url, parameters, actualsignature, auth_token);
+                string signature = Request.Headers["X-Plivo-Signature-V3"].ToString();
+                string nonce = Request.Headers["X-Plivo-Signature-V3_Nonce"].ToString();
+                string auth_token = "your_auth_token";
+                string method = Request.Method;
+                string url = Request.Url;
+                bool valid;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                valid = Plivo.Utilities.XPlivoSignatureV3.VerifySignature(url, nonce, signature, auth_token, method);
                 Debug.WriteLine("Valid : " + valid);
-                
-                Plivo.XML.Response resp = new Plivo.XML.Response();
 
-                // Add Speak XML Tag
-                resp.AddSpeak("Hello, Welcome to Plivo", new Dictionary<string, string>() { });
-                
+                Plivo.XML.Response resp = new Plivo.XML.Response();
+                resp.AddSpeak("Hello, Welcome to Plivo", parameters);
                 Debug.WriteLine(resp.ToString());
-                
+
                 var output = resp.ToString();
-                var res = (Nancy.Response)output;
+                var res = (Nancy.Response) output;
                 res.ContentType = "text/xml";
                 return res;
-            };
+            });
+
+            Post<Response>("/speak/", x =>
+            {
+                string signature = Request.Headers["X-Plivo-Signature-V3"].ToString();
+                string nonce = Request.Headers["X-Plivo-Signature-V3_Nonce"].ToString();
+                string auth_token = "your_auth_token";
+                string method = Request.Method;
+                string url = Request.Url;
+                bool valid;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters = Request.Form;
+                valid = Plivo.Utilities.XPlivoSignatureV3.VerifySignature(url, nonce, signature, auth_token, method, parameters);
+                Debug.WriteLine("Valid : " + valid);
+
+                Plivo.XML.Response resp = new Plivo.XML.Response();
+                resp.AddSpeak("Hello, Welcome to Plivo", parameters);
+                Debug.WriteLine(resp.ToString());
+
+                var output = resp.ToString();
+                var res = (Nancy.Response) output;
+                res.ContentType = "text/xml";
+                return res;
+            });
+        }
+        
+        static void Main(string[] args)
+        {
+            var p = new Program();
         }
     }
 }

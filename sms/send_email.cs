@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using Nancy;
 using RestSharp;
 using Plivo.API;
 using System.Net.Mail;
@@ -11,33 +15,35 @@ namespace Send_Email
     {
         public Program()
         {
-            Post["/receive_sms"] = x =>
+            Post["/email_sms/"] = x =>
             {
                 String from_number = Request.Form["From"]; // Sender's phone number
-                String to_number = Request.Form["To"]; // Receiver's phone number
-                String text = Request.Form["Text"]; // Te text which was received
+                String to_number = Request.Form["To"]; // Receiver's phone number - Plivo number
+                String text = Request.Form["Text"]; // The text which was received on your Plivo number
 
-                // Print the text
-                Console.WriteLine("From : {0}, To : {1}, Text : {2}", from_number, to_number, text);
+                // Print the message
+                Console.WriteLine("Message received from {0}: {1}", from_number, text);
 
                 // Call the SendEmail function
-                string result = SendEmail(text);
+                string result = SendEmail(text, from_number);
                 return result;
             };
         }
 
         // Send Email function
-        protected string SendEmail(string text)
+        protected string SendEmail(string text, string from_number)
         {
             string result = "Message Sent Successfully!!";
-            string user_name = "Your mail address";// Sender’s email ID
+            string user_name = "Your email address";// Sender’s email ID
             const string password = "Your password"; //  password here…
-            string subject = "Testing"; // Subject of the mail
-            string to = "To mail address"; 
+            string subject = "SMS from {0}", from_number; // Subject of the mail
+            string to = "To email address";
             string body = text; // Body of the mail which the text that was received
+            ServicePointManager.ServerCertificateValidationCallback =
+                delegate(object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+            {  return true; };
 
-            try
-            {
+            try {
                 // Initialize the smtp client
                 SmtpClient smtp = new SmtpClient
                 {
@@ -47,25 +53,22 @@ namespace Send_Email
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     Credentials = new System.Net.NetworkCredential(user_name, password),
                     Timeout = 30000,
-               };
+                };
 
                MailMessage message = new MailMessage(user_name, to, subject, body);
                // Send the mail
                smtp.Send(message);
-            }
-
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                result = "Error sending email!!!";
             }
-            
             return result;
         }
     }
 }
 
+
 // Sample Output
 /*
-From : 1111111111, To : 2222222222, Text : Hello, from Plivo
+Message received from  From : 1111111111, Text : Hello, from Plivo
 Message Sent Successfully!!
 */

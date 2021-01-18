@@ -5,28 +5,24 @@ using RestSharp;
 using Plivo.XML;
 using Nancy;
 
-namespace play_recorded
-{
-    public class Program : NancyModule
-    {
-        public Program()
-        {
-            Get["/play"] = x =>
-            {
-                Plivo.XML.Response resp = new Plivo.XML.Response();
+namespace play_recorded {
+  public class Program: NancyModule {
+    public Program() {
+      Get["/play"] = x => {
+        Plivo.XML.Response resp = new Plivo.XML.Response();
 
-                // Add Play tag
-                resp.AddPlay("https://s3.amazonaws.com/plivocloud/music.mp3", new Dictionary<string, string>() { });
+        // Add Play tag
+        resp.AddPlay("https://s3.amazonaws.com/plivocloud/music.mp3", new Dictionary < string, string > () {});
 
-                Debug.WriteLine(resp.ToString());
+        Debug.WriteLine(resp.ToString());
 
-                var output = resp.ToString();
-                var res = (Nancy.Response)output;
-                res.ContentType = "text/xml";
-                return res;
-            };
-        }
+        var output = resp.ToString();
+        var res = (Nancy.Response) output;
+        res.ContentType = "text/xml";
+        return res;
+      };
     }
+  }
 }
 
 /*

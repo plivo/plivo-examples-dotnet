@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
+using Plivo;
 
 namespace endpoints
 {
@@ -9,18 +8,17 @@ namespace endpoints
     {
         static void Main(string[] args)
         {
-            RestAPI plivo = new RestAPI("Your AUTH_ID", "Your AUTH_TOKEN");
+          var api = new PlivoApi("YOUR_AUTH_ID", "YOUR_AUTH_TOKEN");
             
             // Create an endpoint
-            IRestResponse<Endpoint> resp = plivo.create_endpoint(new Dictionary<string,string>()
-            {
-              {"username", "testuser"}, // The username for the endpoint to be created
-              {"password", "testt"}, // The password for your endpoint username
-              {"alias", "Test"} // Alias for this endpoint
-            });
+            var response = api.Endpoint.Create(
+              username:"testusername",
+              alias:"Test Account",
+              password:"testpassword"
+              );
 
             //Prints the response
-            Console.Write(resp.Content);
+            Console.Write(response);
 
             /*
             Sample Output
@@ -33,18 +31,17 @@ namespace endpoints
             }
             */
              
-            // Get details of all existing applications
-            IRestResponse<EndpointList> res = plivo.get_endpoints(new Dictionary<string, string>()
-            { 
-                {"limit","2"}, // The number of results per page
-                {"offset","0"} // The number of value items by which the results should be offset
-            });
+            // Get details of all existing endpoints
+            var response = api.Endpoint.List(
+              limit:5,
+              offset:0
+              );
 
             //Prints the response
-            Console.Write(res.Content);
+            Console.Write(response);
 
             // Prints the total number of apps
-            Console.WriteLine("Total count : " + res.Data.meta.total_count);
+            Console.WriteLine("Total count : " + response.Meta.TotalCount);
 
             /*
             {
@@ -84,14 +81,13 @@ namespace endpoints
             Total count : 3
             */
                      
-            // Get details of a single application
-            IRestResponse<Endpoint> res1 = plivo.get_endpoint(new Dictionary<string, string>()
-            {
-                {"endpoint_id","29147375335448"} // ID of the endpoint for which the details have to be retrieved
-            });
+            // Get details of a single Endpoint
+            var response = api.Endpoint.Get(
+              endpointId:"18385812687105"
+              );
 
             //Prints the response
-            Console.Write(res1.Content);
+            Console.Write(response);
 
             /*
             Sample Output 
@@ -109,15 +105,14 @@ namespace endpoints
             }  
             */
             
-            // Modify an application
-            IRestResponse<GenericResponse> res2 = plivo.modify_endpoint(new Dictionary<string, string>()
-            {
-                {"endpoint_id","29147375335448"}, // ID of the endpoint that has to be modified
-                {"alias","Testing"} // Values that have to be updated
-            });
+            // Modify an Endpoint
+              var response = api.Endpoint.Update(
+                endpointId:"39452475478853",
+                alias:"Updated Endpoint Alias"
+                );
 
             //Prints the response
-            Console.Write(res2.Content);
+            Console.Write(response);
 
             /*
             Sample Output
@@ -128,15 +123,12 @@ namespace endpoints
             */
             
             // Delete an application
-            IRestResponse<GenericResponse> res3 = plivo.delete_endpoint(new Dictionary<string,string>()
-            {
-              {"endpoint_id","29147375335448"}  // ID of the endpoint that as to be deleted
-            });
+            var response = api.Endpoint.Delete(
+              endpointId:"18385812687105"
+              );
 
             //Prints the response
-            Console.Write(res3.Content);
-
-            Console.ReadLine();
+            Console.Write(response);
             /*
             Successful Output
             " "
