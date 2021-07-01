@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using RestSharp;
-using Plivo.API;
-
+using Plivo;
+using Plivo.Exception;
 namespace make_calls {
   class Program {
     static void Main(string[] args) {
@@ -18,11 +17,9 @@ namespace make_calls {
     }
   }
 }
-
 /*
 Sucecssful Output
 " "
-
 Unsuccessful Output
 {
   "api_id": "be4512a4-b5cc-11e4-9107-22000afaaa90",
